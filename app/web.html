@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Upload de arquivos</title>
+</head>
+<body>
+	<form action="http://localhost:3000/upload" method="POST" enctype="multipart/form-data" >
+		<label for="file-upload">Selecione um ou mais arquivos:</label>
+		<input type="file" id="file-upload" name="files" multiple>
+		<br><br>
+		<button type="submit">Enviar</button>
+	</form>
+</body>
+</html>
