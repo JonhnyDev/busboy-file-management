@@ -73,3 +73,27 @@ app.listen(port, () => {
 });
 
 ```
+
+# req.files data:
+```
+Files: [
+  {
+    fieldname: 'files',
+    buffer: <Buffer 54 46 48 30 30 30 30 30 30 30 31 41 52 53 30 32 38 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 32 20 20 20 20 20 20 ... 8350 more bytes>,
+    originalname: 'test.txt',
+    encoding: '7bit',
+    mimetype: 'text/plain',
+    truncated: false,
+    size: 8400,
+    url: ''
+  }
+]
+```
+
+## Supported storages
+
+| Feature  | Status |
+| ------------- | ------------- |
+| Memory  | ✅  |
+| Temporary  | ✅  |
+
