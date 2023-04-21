@@ -39,6 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BusboyFileManagement = void 0;
 var busboy_1 = __importDefault(require("busboy"));
 var bl_1 = __importDefault(require("bl"));
 var os_1 = __importDefault(require("os"));
@@ -192,4 +193,4 @@ var BusboyFileManagement = /** @class */ (function () {
     };
     return BusboyFileManagement;
 }());
-exports.default = BusboyFileManagement;
+exports.BusboyFileManagement = BusboyFileManagement;

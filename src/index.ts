@@ -23,7 +23,7 @@ export interface DataType {
     url: string;
 }
 
-export default class BusboyFileManagement {
+export class BusboyFileManagement {
     LIMIT: number = 5 * 1024 * 1024
     MAXLIMIT: number = 25 * 1024 * 1024 // Limite maximum size 25 megas.
     Options: Settings = {}

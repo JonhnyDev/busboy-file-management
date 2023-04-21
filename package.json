@@ -1,12 +1,13 @@
 {
   "name": "busboy-file-management",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --declaration",
-    "dev": "nodemon --watch \"app//\" --exec \"ts-node app/server.ts\" -e ts",
+    "dev": "nodemon --watch \"app//\" --exec \"ts-node app/express.ts\" -e ts",
+    "dev:fastfy": "nodemon --watch \"app//\" --exec \"ts-node app/fastfy.ts\" -e ts",
     "test": "jest"
   },
   "repository": {

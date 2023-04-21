@@ -1,6 +1,6 @@
 import request from 'supertest';
 import express from 'express';
-import BusboyFileManagement from '../src';
+import { BusboyFileManagement } from '../src';
 
 const app = express();
 app.use(express.json());

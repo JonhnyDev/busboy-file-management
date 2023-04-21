@@ -16,7 +16,7 @@ export interface DataType {
     size: number;
     url: string;
 }
-export default class BusboyFileManagement {
+export declare class BusboyFileManagement {
     LIMIT: number;
     MAXLIMIT: number;
     Options: Settings;

@@ -1,4 +1,4 @@
-import BusboyFileManagement, { DataType, Settings } from '../src';
+import { BusboyFileManagement, DataType, Settings } from '../src';
 import fs from 'fs'
 describe('BusboyFileManagement', () => {
   let middleware: BusboyFileManagement;
