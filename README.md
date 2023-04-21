@@ -20,7 +20,7 @@ yarn add busboy-file-management
 
 ```js
 import express from 'express';
-import BusboyFileManagement from 'busboy-file-management'
+import { BusboyFileManagement } from 'busboy-file-management'
 const UploadManagement = new BusboyFileManagement({
     ignoreInternalLimit: false,
     limit: 8 * 1024 * 1024,
@@ -45,13 +45,14 @@ app.listen(port, () => {
 ## You can also:
 upload_middlaware.js:
 ```js
-import BusboyFileManagement from 'busboy-file-management'
-const UploadManagement = new BusboyFileManagement();
+import { BusboyFileManagement } from 'busboy-file-management'
 
-export default async (req: any, res: any, next: Function) => await UploadManagement.handle(req, res, next);
-
-
+export default async (req: any, res: any, next: Function) => {
+    const UploadManagement = new BusboyFileManagement();
+    return await UploadManagement.handle(req, res, next);
+}
 ```
+
 server.js:
 ```js
 import express from 'express';
