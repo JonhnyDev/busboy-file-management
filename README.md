@@ -17,6 +17,14 @@ yarn add busboy-file-management
 ```
 
 ## USE EXPRESS:
+```js
+
+import { BusboyFileManagement } from 'busboy-file-management'
+
+or
+
+const { BusboyFileManagement } = require('busboy-file-management');
+```
 
 ```js
 import express from 'express';
@@ -52,7 +60,16 @@ export default async (req: any, res: any, next: Function) => {
     return await UploadManagement.handle(req, res, next);
 }
 ```
+or
+```js
+const { BusboyFileManagement } = require('busboy-file-management');
 
+module.exports = () => async (req, res, next) => {
+    const UploadManagement = new BusboyFileManagement();
+    return await UploadManagement.handle(req, res, next);
+};
+
+```
 server.js:
 ```js
 import express from 'express';
