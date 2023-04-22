@@ -16,7 +16,7 @@ YARN:
 yarn add busboy-file-management
 ```
 
-## USE EXPRESS:
+## USE IN EXPRESS:
 ```js
 
 import { BusboyFileManagement } from 'busboy-file-management'
