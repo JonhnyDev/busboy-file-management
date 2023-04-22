@@ -1,117 +1,101 @@
 import busboy from 'busboy';
-import BufferListStream from 'bl';
-import os from 'os';
-import path from 'path';
-import fs from 'fs';
-import { randomUUID } from 'crypto'
-type StorageType = 'memory' | 'temporary' 
-
-export interface Settings {
+import { Storage } from './store/Storage'
+import { MemoryStorage } from './store/MemoryStorage'
+import { TemporaryStorage } from './store/TemporaryStorage'
+import { Readable } from 'stream';
+interface Settings<T extends Storage> {
     ignoreInternalLimit?: boolean
-    limit?: number
+    limitSize?: number
+    limitFiles?: number
     multi?: boolean
-    type?: StorageType
+    storage: T
 }
-export interface DataType {
+interface DataType {
     fieldname: string;
     buffer: Buffer;
     originalname: string;
     encoding: string;
     mimetype: string;
-    truncated: any;
+    truncated: boolean;
     size: number;
     url: string;
 }
 
-export class BusboyFileManagement {
-    LIMIT: number = 5 * 1024 * 1024
-    MAXLIMIT: number = 25 * 1024 * 1024 // Limite maximum size 25 megas.
-    Options: Settings = {}
-    TYPE: StorageType;
-    constructor(options?: Settings){
-        this.Options = options || {};
-        this.TYPE = options?.type ?? 'memory'
-    }
+class BusboyFileManagement <T extends Storage>{
+    MAXLIMIT: number = 25 * 1024 * 1024 // 25MB
+    files: Array<DataType> = [];
+    totalFiles: number = 0;
+    constructor(readonly settings: Settings<T>){}
     public async handle(req: any, _res: any, next: Function){
-        if (!req.is('multipart/form-data')) return next();
-        if(this.Options?.ignoreInternalLimit){
-            if(!this.Options?.limit) throw new Error("Se você definir o ignoreInternalLimit como true, limit deve ter um ser definido e ter um valor numerico.");
-            this.MAXLIMIT = this.Options?.limit
-        }else{
-            if(this.Options?.limit){
-                if(this.Options?.limit < this.MAXLIMIT){
-                    this.MAXLIMIT = this.Options?.limit
+        try{
+            if (!req.is('multipart/form-data')) return next();
+            if(this.settings?.ignoreInternalLimit && !this.settings?.limitSize){
+                throw new Error("If you set the ignoreInternalLimit to true, limit must have a defined value and have a numerical value.");
+            }
+            if(this.settings?.ignoreInternalLimit && this.settings?.limitSize){
+                this.MAXLIMIT = this.settings?.limitSize
+            }
+            if(!this.settings?.ignoreInternalLimit && this.settings?.limitSize){
+                if(this.settings?.limitSize < this.MAXLIMIT){
+                    this.MAXLIMIT = this.settings?.limitSize
                 }
-                this.MAXLIMIT = this.Options?.limit
             }
+            const BusBoy = busboy({ headers: req.headers, limits: { fileSize: this.MAXLIMIT, files: this.settings.limitFiles ?? 1 } });
+            BusBoy.on('file', async (fieldname: string, file: Readable, { filename, encoding, mimeType }: busboy.FileInfo) => {
+                try {
+                    const filesPromise = await this.processFile(fieldname, file, { filename, encoding, mimeType });
+                    this.files.push(filesPromise);
+                } catch (err) {
+                    return next(err);
+                } finally {
+                    this.totalFiles++;
+                }
+            });
+            BusBoy.on('close', async () => {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                req.files = this.files;
+                return next()
+            });
+            BusBoy.on('error', (error) => next(error));
+            BusBoy.on('filesLimit', () => {
+                const error = new Error(`Limit exceeded, allowed only ${this.settings.limitFiles ?? 1} files.`)
+                return next(error)
+            });
+            req.on('close', () => BusBoy.destroy());
+            req.pipe(BusBoy);
+        }catch(err){
+            return next(err);
         }
-        const BusBoy = busboy({ headers: req.headers, limits: { fileSize: this.MAXLIMIT} });
-        let files: DataType[] = [];
-        BusBoy.on('file', async (fieldname: string, file: any, { filename, encoding, mimeType }: busboy.FileInfo) => {
-            try {
-                const fileData = await this.processFile(fieldname, file, { filename, encoding, mimeType });
-                files.push(fileData);
-            } catch (err) {
-                return next(err);
-            }
-        });
-        BusBoy.on('finish', () => next());
-        BusBoy.on('error', (error) => next(error));
-        req.files = files || [];
-        req.body = req.body || {};
-        req.on('close', () => BusBoy.destroy());
-        req.pipe(BusBoy);
     }
-    private async processFile(fieldname: string, file: any, { filename, encoding, mimeType }: busboy.FileInfo): Promise<DataType> {
+    private async processFile(fieldname: string, file: Readable, { filename, encoding, mimeType }: busboy.FileInfo): Promise<DataType> {
         try {
-            if (file?.truncated) {
-                throw new Error('The uploaded file exceeds the maximum size allowed by the server');
+            if(!filename) throw new Error('The file must have a name');
+            const data = await this.settings.storage.save(file)
+            if ('truncated' in file) {
+                if(file.truncated) throw new Error('The uploaded file exceeds the maximum size allowed by the server');
             }
-            const data = await this[this.TYPE](file, fieldname)
-
-            return {
+            const response = {
                 fieldname: fieldname,
                 buffer: data.buffer,
                 originalname: filename,
                 encoding: encoding,
                 mimetype: mimeType,
-                truncated: file?.truncated ?? false,
+                truncated: false,
                 size: Buffer.byteLength(data.buffer, 'binary'),
                 url: data.url,
-            };
+            }
+            return response;
         } catch (err) {
             throw err;
         }
     }
-    private async temporary(file: any, fieldname: string){
-        const tmpFile = path.join(os.tmpdir(), `${fieldname}-${randomUUID()}`);
+}
 
-        await new Promise<void>((resolve, reject) => {
-            const writeStream = fs.createWriteStream(tmpFile);
-            file.pipe(writeStream);
-            writeStream.on('finish', resolve);
-            writeStream.on('error', reject);
-        });
-
-        return { 
-            buffer: await fs.promises.readFile(tmpFile),
-            url: tmpFile,
-        }
-    }
-    private async memory(file: any, fieldname: string){
-        return {
-            buffer: await new Promise((resolve, reject) => {
-                file.pipe(
-                BufferListStream((err, data) => {
-                    if (err || !(data.length || fieldname)) {
-                        reject(err);
-                    } else {
-                        resolve(data);
-                    }
-                })
-                );
-            }) as Buffer,
-            url: '',
-        }
-    }
+export {
+    BusboyFileManagement,
+    DataType,
+    Settings,
+    MemoryStorage,
+    TemporaryStorage,
+    Storage
 }

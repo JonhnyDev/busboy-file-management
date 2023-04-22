@@ -52,25 +52,38 @@ app.listen(port, () => {
 });
 ```
 ## You can also:
+
+# Memory Usage
 upload_middlaware.js:
 ```js
-import { BusboyFileManagement } from 'busboy-file-management'
+import { BusboyFileManagement, MemoryStorage } from 'busboy-file-management'
 
 export default async (req: any, res: any, next: Function) => {
-    const UploadManagement = new BusboyFileManagement();
+    const UploadManagement = new BusboyFileManagement({
+        ignoreInternalLimit: true,
+        limitSize: 80 * 1024 * 1024,
+        limitFiles: 5,
+        storage: new MemoryStorage()
+    });
     return await UploadManagement.handle(req, res, next);
 }
 ```
-or
+ or
+
 ```js
-const { BusboyFileManagement } = require('busboy-file-management');
+import { BusboyFileManagement, TemporaryStorage } from 'busboy-file-management'
 
-module.exports = () => async (req, res, next) => {
-    const UploadManagement = new BusboyFileManagement();
+export default async (req: any, res: any, next: Function) => {
+    const UploadManagement = new BusboyFileManagement({
+        ignoreInternalLimit: true,
+        limitSize: 80 * 1024 * 1024,
+        limitFiles: 5,
+        storage: new TemporaryStorage()
+    });
     return await UploadManagement.handle(req, res, next);
-};
-
+}
 ```
+
 server.js:
 ```js
 import express from 'express';
@@ -113,6 +126,6 @@ Files: [
 
 | Feature  | Status |
 | ------------- | ------------- |
-| Memory  | ✅  |
-| Temporary  | ✅  |
+| MemoryStorage  | ✅  |
+| TemporaryStorage  | ✅  |
 

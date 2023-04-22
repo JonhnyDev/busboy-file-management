@@ -10,6 +10,7 @@ app.get('/', (_req: any, res: any) => {
   res.status(200).send('ok')
 });
 app.post('/upload', (req: any, res: any) => {
+  console.log('Files Total:', req.files.length);
   console.log('Files:', req.files);
   console.log('Fields:', req.body);
   res.send('Upload successful!');
