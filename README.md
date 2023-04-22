@@ -16,7 +16,7 @@ YARN:
 yarn add busboy-file-management
 ```
 
-## USE IN EXPRESS:
+## USE:
 ```js
 
 import { BusboyFileManagement } from 'busboy-file-management'
@@ -26,6 +26,7 @@ or
 const { BusboyFileManagement } = require('busboy-file-management');
 ```
 
+# EXPRESS Middlaware:
 ```js
 import express from 'express';
 import { BusboyFileManagement } from 'busboy-file-management'
