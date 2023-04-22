@@ -27,33 +27,8 @@ const { BusboyFileManagement } = require('busboy-file-management');
 ```
 
 # EXPRESS Middlaware:
-```js
-import express from 'express';
-import { BusboyFileManagement } from 'busboy-file-management'
-const UploadManagement = new BusboyFileManagement({
-    ignoreInternalLimit: false,
-    limit: 8 * 1024 * 1024,
-    multi: false,
-    type: 'memory'
-});
-const app = express();
-const port = 3000;
 
-app.use(express.json());
-app.use(UploadManagement.handle)
-app.post('/upload', (req: any, res: any) => {
-  console.log('Files:', req.files);
-  console.log('Fields:', req.body);
-  res.send('Upload successful!');
-});
-
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
-```
-## You can also:
-
-# Memory Usage
+## Memory Usage
 upload_middlaware.js:
 ```js
 import { BusboyFileManagement, MemoryStorage } from 'busboy-file-management'
@@ -106,7 +81,7 @@ app.listen(port, () => {
 
 ```
 
-# req.files data:
+## req.files data:
 ```
 Files: [
   {
