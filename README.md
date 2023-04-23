@@ -44,7 +44,7 @@ export default async (req: any, res: any, next: Function) => {
     return await UploadManagement.handle(req, res, next);
 }
 ```
- or
+## Temporary Usage
 
 ```js
 import { BusboyFileManagement, TemporaryStorage } from 'busboy-file-management'
@@ -83,7 +83,7 @@ app.listen(port, () => {
 
 ```
 
-## req.files data:
+## req.files memoery storage data:
 ```
 Files: [
   {
@@ -120,3 +120,8 @@ Files: [
 | MemoryStorage  | ✅  |
 | TemporaryStorage  | ✅  |
 
+## Default settings
+| setting  | value |
+| ------------- | ------------- |
+| files  | 1  |
+| fileSize  | 25MB  |
