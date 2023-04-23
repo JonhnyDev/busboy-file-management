@@ -1,13 +1,13 @@
 {
   "name": "busboy-file-management",
-  "version": "1.0.1",
-  "description": "",
+  "version": "2.0.2",
+  "description": "Busboy File Management is a library for managing files on the server using Busboy, a Node.js module for analyzing multipart/form-data data.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --declaration",
-    "dev": "nodemon --watch \"app//\" --exec \"ts-node app/express.ts\" -e ts",
-    "dev:fastfy": "nodemon --watch \"app//\" --exec \"ts-node app/fastfy.ts\" -e ts",
+    "dev": "nodemon --watch . --exec \"ts-node app/express.ts\" -e ts",
+    "dev:fastfy": "nodemon --watch . --exec \"ts-node app/fastfy.ts\" -e ts",
     "test": "jest"
   },
   "repository": {

@@ -16,39 +16,47 @@ YARN:
 yarn add busboy-file-management
 ```
 
-## USE EXPRESS:
-
+## USE:
 ```js
-import express from 'express';
+
 import { BusboyFileManagement } from 'busboy-file-management'
-const UploadManagement = new BusboyFileManagement({
-    ignoreInternalLimit: false,
-    limit: 8 * 1024 * 1024,
-    multi: false,
-    type: 'memory'
-});
-const app = express();
-const port = 3000;
 
-app.use(express.json());
-app.use(UploadManagement.handle)
-app.post('/upload', (req: any, res: any) => {
-  console.log('Files:', req.files);
-  console.log('Fields:', req.body);
-  res.send('Upload successful!');
-});
+or
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+const { BusboyFileManagement } = require('busboy-file-management');
 ```
-## You can also:
+
+# EXPRESS Middlaware:
+
+## Memory Usage
 upload_middlaware.js:
 ```js
-import { BusboyFileManagement } from 'busboy-file-management'
+import { BusboyFileManagement, MemoryStorage } from 'busboy-file-management'
 
 export default async (req: any, res: any, next: Function) => {
-    const UploadManagement = new BusboyFileManagement();
+    const UploadManagement = new BusboyFileManagement({
+        limits:{
+            files: 5,
+            fileSize: 80 * 1024 * 1024
+        },
+        storage: new MemoryStorage()
+    });
+    return await UploadManagement.handle(req, res, next);
+}
+```
+ or
+
+```js
+import { BusboyFileManagement, TemporaryStorage } from 'busboy-file-management'
+
+export default async (req: any, res: any, next: Function) => {
+    const UploadManagement = new BusboyFileManagement({
+        limits:{
+            files: 5,
+            fileSize: 80 * 1024 * 1024
+        },
+        storage: new TemporaryStorage()
+    });
     return await UploadManagement.handle(req, res, next);
 }
 ```
@@ -75,7 +83,7 @@ app.listen(port, () => {
 
 ```
 
-# req.files data:
+## req.files data:
 ```
 Files: [
   {
@@ -90,11 +98,25 @@ Files: [
   }
 ]
 ```
-
+## req.files data temporary storage:
+```
+Files: [
+  {
+    fieldname: 'files',
+    buffer: <Buffer 54 46 48 30 30 30 30 30 30 30 31 41 52 53 30 32 38 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 32 20 20 20 20 20 20 ... 8350 more bytes>,
+    originalname: 'test.txt',
+    encoding: '7bit',
+    mimetype: 'text/plain',
+    truncated: false,
+    size: 8400,
+    url: 'C:\\Users\XXXXX\AppData\Local\Temp\ad31f46f-f1b5-4f22-a5e7-5df6243bf1fb'
+  }
+]
+```
 ## Supported storages
 
 | Feature  | Status |
 | ------------- | ------------- |
-| Memory  | ✅  |
-| Temporary  | ✅  |
+| MemoryStorage  | ✅  |
+| TemporaryStorage  | ✅  |
 
