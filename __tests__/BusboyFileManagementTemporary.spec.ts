@@ -4,13 +4,14 @@ import { Readable } from 'stream';
 
 
 describe('BusboyFileManagementTemporary', () => {
-  let middleware: BusboyFileManagement<TemporaryStorage>;
+  let middleware: BusboyFileManagement;
 
   beforeEach(() => {
     middleware = new BusboyFileManagement({
-        ignoreInternalLimit: true,
-        limitSize: 80 * 1024 * 1024,
-        limitFiles: 5,
+        limits:{
+            files: 5,
+            fileSize: 80 * 1024 * 1024
+        },
         storage: new TemporaryStorage()
     });
   });
@@ -29,7 +30,6 @@ describe('BusboyFileManagementTemporary', () => {
       expect(result.originalname).toBe('test.txt');
       expect(result.encoding).toBe('utf8');
       expect(result.mimetype).toBe('text/plain');
-      expect(result.truncated).toBe(false);
       expect(result.size).toBe(4);
       expect(result.url).toBeDefined();
       expect(fs.existsSync(result.url)).toBe(true);

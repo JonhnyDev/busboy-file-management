@@ -1,15 +1,16 @@
-import { BusboyFileManagement, DataType, MemoryStorage } from '../src';
+import { BusboyFileManagement, MemoryStorage, File } from '../src';
 import { Readable } from 'stream';
 
 
 describe('BusboyFileManagementMemory', () => {
-  let middleware: BusboyFileManagement<MemoryStorage>;
+  let middleware: BusboyFileManagement;
 
   beforeEach(() => {
     middleware = new BusboyFileManagement({
-        ignoreInternalLimit: true,
-        limitSize: 80 * 1024 * 1024,
-        limitFiles: 5,
+        limits:{
+            files: 5,
+            fileSize: 80 * 1024 * 1024
+        },
         storage: new MemoryStorage()
     });
   });
@@ -33,13 +34,12 @@ describe('BusboyFileManagementMemory', () => {
         mimeType: 'text/plain',
       };
       const result = await middleware['processFile']('file', file, fileInfo);
-      expect(result).toMatchObject<DataType>({
+      expect(result).toMatchObject<File>({
         buffer:  Buffer.from('test'),
         fieldname: 'file',
         originalname: 'test.txt',
         encoding: 'utf8',
         mimetype: 'text/plain',
-        truncated: false,
         size: 4,
         url: '',
       });
@@ -61,7 +61,6 @@ describe('BusboyFileManagementMemory', () => {
       expect(result.originalname).toBe(fileInfo.filename)
       expect(result.encoding).toBe(fileInfo.encoding)
       expect(result.mimetype).toBe(fileInfo.mimeType)
-      expect(result.truncated).toBe(false)
       expect(result.size).toBe(4)
       expect(result.buffer.toString()).toBe('test');
     });

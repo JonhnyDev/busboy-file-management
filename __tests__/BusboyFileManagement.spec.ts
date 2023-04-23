@@ -2,13 +2,14 @@ import { BusboyFileManagement, MemoryStorage } from '../src';
 
 
 describe('BusboyFileManagementMemory', () => {
-  let middleware: BusboyFileManagement<MemoryStorage>;
+  let middleware: BusboyFileManagement;
 
   beforeEach(() => {
     middleware = new BusboyFileManagement({
-        ignoreInternalLimit: true,
-        limitSize: 80 * 1024 * 1024,
-        limitFiles: 5,
+        limits:{
+            files: 5,
+            fileSize: 80 * 1024 * 1024
+        },
         storage: new MemoryStorage()
     });
   });
