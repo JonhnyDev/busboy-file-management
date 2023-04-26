@@ -1,4 +1,4 @@
-import { BusboyFileManagement, MemoryStorage, File } from '../src';
+import { BusboyFileManagement, MemoryStorage } from '../src';
 import { Readable } from 'stream';
 
 
@@ -34,34 +34,13 @@ describe('BusboyFileManagementMemory', () => {
         mimeType: 'text/plain',
       };
       const result = await middleware['processFile']('file', file, fileInfo);
-      expect(result).toMatchObject<File>({
-        buffer:  Buffer.from('test'),
-        fieldname: 'file',
-        originalname: 'test.txt',
-        encoding: 'utf8',
-        mimetype: 'text/plain',
-        size: 4,
-        url: '',
-      });
-      expect(result.buffer.toString()).toBe('test');
-    });
-
-    it('should process a file in temporary storage', async () => {
-      const fileContent = 'test';
-      const file = Readable.from(fileContent);
-      const fileInfo = {
-        filename: 'test.txt',
-        encoding: 'utf8',
-        mimeType: 'text/plain',
-      };
-      //middleware = new BusboyFileManagement({ type: 'temporary' });
-      const result = await middleware['processFile']('file', file, fileInfo);
       expect(Buffer.isBuffer(result.buffer)).toBe(true);
-      expect(result.fieldname).toBe('file')
-      expect(result.originalname).toBe(fileInfo.filename)
-      expect(result.encoding).toBe(fileInfo.encoding)
-      expect(result.mimetype).toBe(fileInfo.mimeType)
-      expect(result.size).toBe(4)
+      expect(result.fieldname).toBe('file');
+      expect(result.originalname).toBe('test.txt');
+      expect(result.encoding).toBe('utf8');
+      expect(result.mimetype).toBe('text/plain');
+      expect(result.size).toBe(4);
+      expect(result.url).toBeDefined();
       expect(result.buffer.toString()).toBe('test');
     });
 

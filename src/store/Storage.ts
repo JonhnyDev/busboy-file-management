@@ -6,9 +6,13 @@ export interface Data {
 interface ReadableStorage {
     read(url: string): Promise<Buffer>;
 }
-
-interface WritableStorage {
-    write(file: Readable): Promise<string>;
+interface DestroyStorage {
+    destroy(url: string): Promise<void>;
 }
-
-export interface Storage extends ReadableStorage, WritableStorage {}
+interface WritableStorage {
+    write(file: Readable, filename: string): Promise<string>;
+}
+interface PersistInStorage {
+    persist?(url: string): Promise<any>;
+}
+export interface Storage extends ReadableStorage, WritableStorage, DestroyStorage, PersistInStorage {}
