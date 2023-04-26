@@ -3,8 +3,11 @@ import BufferListStream from 'bl';
 import { Readable } from 'stream';
 
 export class MemoryStorage implements Storage {
-    buffer: Buffer = Buffer.alloc(0);
-    public async write(file: Readable): Promise<string> {
+    private buffer: Buffer = Buffer.alloc(0);
+    public async destroy(_url: string): Promise<void> {
+        this.buffer = Buffer.alloc(0);
+    }
+    public async write(file: Readable, _filename: string): Promise<string> {
         try {
             const buffer = await new Promise<Buffer>((resolve, reject) => {
                 file.pipe(
@@ -20,11 +23,7 @@ export class MemoryStorage implements Storage {
             throw err;
         }
     }
-    public async read(_url: string): Promise<Buffer> {
-        try {
-            return this.buffer;
-        } catch (err) {
-            throw err;
-        }
+    public async read(): Promise<Buffer> {
+        return this.buffer;
     }
 }

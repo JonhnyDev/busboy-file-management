@@ -61,6 +61,23 @@ export default async (req: any, res: any, next: Function) => {
 }
 ```
 
+## Local Usage
+
+```js
+import { BusboyFileManagement, LocalStorage } from 'busboy-file-management'
+
+export default async (req: any, res: any, next: Function) => {
+    const UploadManagement = new BusboyFileManagement({
+        limits:{
+            files: 5,
+            fileSize: 80 * 1024 * 1024
+        },
+        storage: new LocalStorage('/files')
+    });
+    return await UploadManagement.handle(req, res, next);
+}
+```
+
 server.js:
 ```js
 import express from 'express';
@@ -83,7 +100,7 @@ app.listen(port, () => {
 
 ```
 
-## req.files memoery storage data:
+## req.files MemoryStorage data:
 ```
 Files: [
   {
@@ -98,7 +115,7 @@ Files: [
   }
 ]
 ```
-## req.files data temporary storage:
+## req.files data Temporary/Local Storage:
 ```
 Files: [
   {
@@ -119,6 +136,7 @@ Files: [
 | ------------- | ------------- |
 | MemoryStorage  | ✅  |
 | TemporaryStorage  | ✅  |
+| LocalStorage  | ✅  |
 
 ## Default settings
 | setting  | value |
