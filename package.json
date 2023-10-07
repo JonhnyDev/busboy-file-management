@@ -1,6 +1,6 @@
 {
   "name": "busboy-file-management",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Busboy File Management is a library for managing files on the server using Busboy, a Node.js module for analyzing multipart/form-data data.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

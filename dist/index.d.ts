@@ -36,6 +36,7 @@ declare class BusboyFileManagement implements UploadHandler {
     private inProcess;
     private checkloading;
     constructor(settings: Settings);
+    static config(settings: Settings): BusboyFileManagement;
     handle(req: any, _res: any, next: Function): Promise<UploadResult>;
     private createBusboy;
     private processFiles;

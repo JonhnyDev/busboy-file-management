@@ -68,6 +68,9 @@ var BusboyFileManagement = /** @class */ (function () {
         this.inProcess = {};
         this.DEFAULT_LIMITS = __assign({}, this.settings.limits);
     }
+    BusboyFileManagement.config = function (settings) {
+        return new BusboyFileManagement(settings);
+    };
     BusboyFileManagement.prototype.handle = function (req, _res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var busboy_2, uploadedFiles, err_1;
