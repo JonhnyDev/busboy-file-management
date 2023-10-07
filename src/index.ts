@@ -46,7 +46,9 @@ class BusboyFileManagement implements UploadHandler {
     constructor(private readonly settings: Settings) {
         this.DEFAULT_LIMITS = { ...this.settings.limits }
     }
-  
+    static config(settings: Settings){
+        return new BusboyFileManagement(settings)
+    }
     public async handle(req: any, _res: any, next: Function): Promise<UploadResult> {
         try {
             if (!req.is('multipart/form-data')) return next();

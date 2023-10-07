@@ -7,7 +7,7 @@ describe('BusboyFileManagementTemporary', () => {
   let middleware: BusboyFileManagement;
 
   beforeEach(() => {
-    middleware = new BusboyFileManagement({
+    middleware = BusboyFileManagement.config({
         limits:{
             files: 5,
             fileSize: 80 * 1024 * 1024
