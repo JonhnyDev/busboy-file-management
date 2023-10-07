@@ -33,15 +33,13 @@ upload_middlaware.js:
 ```js
 import { BusboyFileManagement, MemoryStorage } from 'busboy-file-management'
 
-export default async (req: any, res: any, next: Function) => {
-    const UploadManagement = new BusboyFileManagement({
+export default async (req: any, res: any, next: Function) => BusboyFileManagement.config({
         limits:{
             files: 5,
             fileSize: 80 * 1024 * 1024
         },
         storage: new MemoryStorage()
-    });
-    return await UploadManagement.handle(req, res, next);
+    }).handle(req, res, next);
 }
 ```
 ## Temporary Usage
@@ -49,15 +47,13 @@ export default async (req: any, res: any, next: Function) => {
 ```js
 import { BusboyFileManagement, TemporaryStorage } from 'busboy-file-management'
 
-export default async (req: any, res: any, next: Function) => {
-    const UploadManagement = new BusboyFileManagement({
+export default async (req: any, res: any, next: Function) => BusboyFileManagement.config({
         limits:{
             files: 5,
             fileSize: 80 * 1024 * 1024
         },
         storage: new TemporaryStorage()
-    });
-    return await UploadManagement.handle(req, res, next);
+    }).handle(req, res, next);
 }
 ```
 
@@ -66,15 +62,13 @@ export default async (req: any, res: any, next: Function) => {
 ```js
 import { BusboyFileManagement, LocalStorage } from 'busboy-file-management'
 
-export default async (req: any, res: any, next: Function) => {
-    const UploadManagement = new BusboyFileManagement({
+export default async (req: any, res: any, next: Function) => BusboyFileManagement.config({
         limits:{
             files: 5,
             fileSize: 80 * 1024 * 1024
         },
         storage: new LocalStorage('/files')
-    });
-    return await UploadManagement.handle(req, res, next);
+    }).handle(req, res, next);
 }
 ```
 
